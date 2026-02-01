@@ -8,5 +8,8 @@ public class Customer {
     private String email;
     private String phone;
     private String designation;
-    private Date createdDate;
+    private Double salary;
+    private Date hiredate;
+
+    
 }
