@@ -1,18 +1,23 @@
-package com.courier.gui;
+package ui;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class MainFrame extends JFrame {
+
     public MainFrame() {
-        setTitle("Courier System Dashboard");
-        setSize(800, 600);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        JPanel panel = new JPanel();
-        JButton btnViewParcels = new JButton("View Parcels");
-        panel.add(btnViewParcels);
+        setTitle("Courier System");
+        setSize(400,300);
+        setLayout(new JTabbedPane());
 
-        add(panel, BorderLayout.CENTER);
+        JTabbedPane tabs = new JTabbedPane();
+
+        tabs.add("Courier", new CourierPanel());
+        tabs.add("Customer", new CustomerPanel());
+        tabs.add("Employee", new EmployeePanel());
+        tabs.add("Shipment", new ShipmentPanel());
+
+        add(tabs);
+        setVisible(true);
     }
 }
