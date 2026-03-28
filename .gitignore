@@ -1,0 +1,19 @@
+# Compiled class files
+bin/
+*.class
+
+# VS Code workspace files
+.vscode/
+
+# Eclipse/Java project files (created by VS Code Java extension)
+.classpath
+.project
+.settings/
+
+# Temp files
+*.tmp
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
