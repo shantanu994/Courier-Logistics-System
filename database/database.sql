@@ -79,3 +79,4 @@ INSERT INTO customers (name, email, phone, address, city, state, pincode) VALUES
 ('Amit Joshi',  'amit@gmail.com',  '9876543210', '12 MG Road',      'Pune',      'Maharashtra', '411001'),
 ('Sneha Rao',   'sneha@gmail.com', '9876543211', '45 Brigade Road', 'Bangalore', 'Karnataka',   '560001'),
 ('Rahul Mehta', 'rahul@gmail.com', '9876543212', '78 Park Street',  'Mumbai',    'Maharashtra', '400001');
+
