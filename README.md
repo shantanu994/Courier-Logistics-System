@@ -41,6 +41,12 @@ Courier-Logistics-System/
 ├── src/com/courier/
 │   ├── Main.java
 │   ├── dao/
+│   │   ├── CustomerDAO.java
+│   │   ├── CustomerDAOImpl.java
+│   │   ├── EmployeeDAO.java
+│   │   ├── EmployeeDAOImpl.java
+│   │   ├── ShipmentDAO.java
+│   │   └── ShipmentDAOImpl.java
 │   ├── db/
 │   │   ├── DBConnection.java
 │   │   └── TestConnection.java
@@ -148,6 +154,7 @@ Still working on this project:
 - Database schema: Done
 - Models: Done
 - Database connection: Done
+- DAO layer (Customer, Employee, Shipment): Done
 - DAO layer: In progress
 - UI components: Still to do
 - Business logic: Still to do
