@@ -46,7 +46,9 @@ Courier-Logistics-System/
 │   │   ├── EmployeeDAO.java
 │   │   ├── EmployeeDAOImpl.java
 │   │   ├── ShipmentDAO.java
-│   │   └── ShipmentDAOImpl.java
+│   │   ├── ShipmentDAOImpl.java
+│   │   ├── BillingDAO.java
+│   │   └── BillingDAOImpl.java
 │   ├── db/
 │   │   ├── DBConnection.java
 │   │   └── TestConnection.java
