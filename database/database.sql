@@ -1,6 +1,7 @@
-CREATE DATABASE courier_logistics_system;
-USE courier_logistics_system;
-CREATE TABLE customers (
+CREATE DATABASE IF NOT EXISTS courier_logistics;
+USE courier_logistics;
+
+CREATE TABLE IF NOT EXISTS customers (
     customer_id  INT AUTO_INCREMENT PRIMARY KEY,
     name         VARCHAR(100) NOT NULL,
     email        VARCHAR(100) NOT NULL UNIQUE,
@@ -11,7 +12,8 @@ CREATE TABLE customers (
     pincode      VARCHAR(10)  NOT NULL,
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE employees (
+
+CREATE TABLE IF NOT EXISTS employees (
     employee_id  INT AUTO_INCREMENT PRIMARY KEY,
     name         VARCHAR(100) NOT NULL,
     email        VARCHAR(100) NOT NULL UNIQUE,
@@ -21,7 +23,8 @@ CREATE TABLE employees (
     hire_date    DATE NOT NULL,
     status       ENUM('ACTIVE','INACTIVE') DEFAULT 'ACTIVE'
 );
-CREATE TABLE shipments (
+
+CREATE TABLE IF NOT EXISTS shipments (
     shipment_id        INT AUTO_INCREMENT PRIMARY KEY,
     tracking_number    VARCHAR(20) NOT NULL UNIQUE,
     sender_id          INT NOT NULL,
@@ -37,7 +40,6 @@ CREATE TABLE shipments (
     estimated_delivery DATE,
     actual_delivery    DATE,
     created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
     CONSTRAINT fk_sender
         FOREIGN KEY (sender_id)   REFERENCES customers(customer_id),
     CONSTRAINT fk_receiver
@@ -45,17 +47,18 @@ CREATE TABLE shipments (
     CONSTRAINT fk_courier
         FOREIGN KEY (courier_id)  REFERENCES employees(employee_id)
 );
-CREATE TABLE tracking_history (
+
+CREATE TABLE IF NOT EXISTS tracking_history (
     tracking_id  INT AUTO_INCREMENT PRIMARY KEY,
     shipment_id  INT NOT NULL,
     status       VARCHAR(50)  NOT NULL,
     location     VARCHAR(100) NOT NULL,
     remarks      TEXT,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
     FOREIGN KEY (shipment_id) REFERENCES shipments(shipment_id)
 );
-CREATE TABLE billing (
+
+CREATE TABLE IF NOT EXISTS billing (
     bill_id         INT AUTO_INCREMENT PRIMARY KEY,
     shipment_id     INT NOT NULL UNIQUE,
     customer_id     INT NOT NULL,
@@ -66,17 +69,6 @@ CREATE TABLE billing (
     payment_method  ENUM('CASH','CARD','UPI','NET_BANKING'),
     bill_date       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     paid_date       TIMESTAMP NULL,
-
     FOREIGN KEY (shipment_id) REFERENCES shipments(shipment_id),
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
 );
-INSERT INTO employees (name, email, phone, role, salary, hire_date) VALUES
-('Admin User',    'admin@courier.com',  '9000000001', 'ADMIN',   75000, '2022-01-01'),
-('Ramesh Kumar',  'ramesh@courier.com', '9000000002', 'COURIER', 30000, '2022-03-15'),
-('Priya Sharma',  'priya@courier.com',  '9000000003', 'MANAGER', 55000, '2022-02-01');
-
-INSERT INTO customers (name, email, phone, address, city, state, pincode) VALUES
-('Amit Joshi',  'amit@gmail.com',  '9876543210', '12 MG Road',      'Pune',      'Maharashtra', '411001'),
-('Sneha Rao',   'sneha@gmail.com', '9876543211', '45 Brigade Road', 'Bangalore', 'Karnataka',   '560001'),
-('Rahul Mehta', 'rahul@gmail.com', '9876543212', '78 Park Street',  'Mumbai',    'Maharashtra', '400001');
-
