@@ -17,54 +17,65 @@ A Java Swing + JDBC project for managing courier operations. Built using Java, S
 
 ## Features
 
-- Customer management (add, update, view customers)
-- Employee management with different roles (Admin, Manager, Courier)
-- Shipment tracking system
-- Tracking history for each shipment
-- Billing system with tax calculations
-- Role-based access control
-- Multiple package types (Document, Parcel, Fragile, Heavy)
-- Payment status tracking
+- **Customer Management** - Add, update, view, and manage customer information
+- **Employee Management** - Manage employees with different roles (Admin, Manager, Courier)
+- **Shipment Tracking** - Track shipments in real-time with status updates
+- **Tracking History** - Complete history of each shipment's status changes
+- **Billing System** - Automated billing with tax calculations and payment tracking
+- **Role-based Access Control** - Different permissions based on user role
+- **Multiple Package Types** - Support for Document, Parcel, Fragile, and Heavy categories
+- **Payment Status Tracking** - Monitor payment status for each shipment
+- **Login System** - Secure login panel for user authentication
+- **Dashboard UI** - Comprehensive UI panels for all major features
 
 ## Tech Stack
 
-- Frontend: Java Swing
-- Backend: Java
-- Database: MySQL
-- JDBC Driver: MySQL Connector/J
-- JDK: 11 or higher
+- **Frontend:** Java Swing (GUI framework)
+- **Backend:** Java (Object-Oriented Design with DAO pattern)
+- **Database:** MySQL 8.0 or higher
+- **Database Driver:** MySQL Connector/J (JDBC)
+- **JDK:** 11 or higher
+- **Architecture:** MVC with DAO pattern
+- **Design Patterns:** Data Access Object (DAO), Singleton (for DB Connection)
 
 ## Project Structure
 
 ```
 Courier-Logistics-System/
 ├── src/com/courier/
-│   ├── Main.java
-│   ├── dao/
+│   ├── Main.java                    # Application entry point
+│   ├── testd.java                   # Test/debug file
+│   ├── dao/                         # Data Access Objects
+│   │   ├── BillingDAO.java
+│   │   ├── BillingDAOImpl.java
 │   │   ├── CustomerDAO.java
 │   │   ├── CustomerDAOImpl.java
 │   │   ├── EmployeeDAO.java
 │   │   ├── EmployeeDAOImpl.java
 │   │   ├── ShipmentDAO.java
-│   │   ├── ShipmentDAOImpl.java
-│   │   ├── BillingDAO.java
-│   │   └── BillingDAOImpl.java
-│   ├── db/
-│   │   ├── DBConnection.java
-│   │   └── TestConnection.java
-│   ├── model/
+│   │   └── ShipmentDAOImpl.java
+│   ├── db/                          # Database Connection
+│   │   └── DBConnection.java
+│   ├── model/                       # Data Model Classes
 │   │   ├── Bill.java
 │   │   ├── Customer.java
 │   │   ├── Employee.java
 │   │   ├── Shipment.java
 │   │   └── TrackingHistory.java
-│   ├── ui/panels/
-│   └── util/
+│   ├── ui/                          # User Interface
+│   │   ├── LoginPanel.java
+│   │   ├── MainFrame.java
+│   │   └── panels/
+│   │       ├── BillingPanel.java
+│   │       ├── CustomerPanel.java
+│   │       ├── EmployeePanel.java
+│   │       └── ShipmentPanel.java
+│   └── util/                        # Utilities
 │       └── DatabaseException.java
-├── bin/
-├── lib/
+├── bin/                             # Compiled classes
+├── lib/                             # External libraries
 ├── database/
-│   └── database.sql
+│   └── database.sql                 # Database schema & sample data
 ├── README.md
 └── LICENSE
 ```
@@ -142,25 +153,34 @@ java -cp bin:lib/mysql-connector-java.jar com.courier.Main
 
 ## Usage
 
+After starting the application:
+
+1. **Login Panel** - Authenticate with your employee credentials
+2. **Main Frame** - Navigate to different modules using the menu
+3. **Customer Panel** - Manage customer information
+4. **Employee Panel** - View and manage employee records
+5. **Shipment Panel** - Create and track shipments in real-time
+6. **Billing Panel** - Generate and manage invoices
+
 The database comes with sample data:
 
-- 3 employees (1 admin, 1 manager, 1 courier)
+- 3 employees (1 Admin, 1 Manager, 1 Courier)
 - 3 sample customers
+- Sample shipments and billing records
 
-You can use these to test the shipment tracking and billing features.
+Use these to test the complete workflow of shipment tracking and billing features.
 
 ## Status
 
-Still working on this project:
+Project development progress:
 
-- Database schema: Done
-- Models: Done
-- Database connection: Done
-- DAO layer (Customer, Employee, Shipment): Done
-- DAO layer: In progress
-- UI components: Still to do
-- Business logic: Still to do
-- Testing: Still to do
+- Database schema: ✓ Done
+- Models: ✓ Done
+- Database connection: ✓ Done
+- DAO layer (Customer, Employee, Shipment, Billing): ✓ Done
+- UI components (Login, Main Frame, Panels): ✓ In Progress
+- Business logic integration: In Progress
+- Testing: In Progress
 
 ## License
 
