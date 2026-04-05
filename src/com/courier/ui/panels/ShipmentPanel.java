@@ -12,16 +12,16 @@ import java.util.ArrayList;
 
 public class ShipmentPanel extends JPanel {
 
-    private ShipmentDAO dao        = new ShipmentDAOImpl();
+    private ShipmentDAO dao = new ShipmentDAOImpl();
     private CustomerDAO customerDao = new CustomerDAOImpl();
 
-    private JTable            table;
+    private JTable table;
     private DefaultTableModel tableModel;
 
-    private JTextField  idField, trackingField, originField,
-                        destinationField, weightField, deliveryField;
+    private JTextField idField, trackingField, originField,
+            destinationField, weightField, deliveryField;
     private JComboBox<String> packageTypeBox, statusBox;
-    private JTextField  senderIdField, receiverIdField, courierIdField;
+    private JTextField senderIdField, receiverIdField, courierIdField;
 
     private JButton addBtn, updateStatusBtn, deleteBtn, clearBtn, trackBtn;
 
@@ -29,7 +29,7 @@ public class ShipmentPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(buildTablePanel(), BorderLayout.CENTER);
-        add(buildFormPanel(),  BorderLayout.SOUTH);
+        add(buildFormPanel(), BorderLayout.SOUTH);
         loadTable();
     }
 
@@ -39,24 +39,29 @@ public class ShipmentPanel extends JPanel {
         // search bar
         JPanel searchBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JTextField searchField = new JTextField(20);
-        JButton    searchBtn   = new JButton("Track by Number");
+        JButton searchBtn = new JButton("Track by Number");
         searchBtn.addActionListener(e -> trackShipment(searchField.getText().trim()));
         searchBar.add(new JLabel("Tracking No:"));
         searchBar.add(searchField);
         searchBar.add(searchBtn);
         panel.add(searchBar, BorderLayout.NORTH);
 
-        String[] cols = {"ID", "Tracking No", "Sender ID", "Receiver ID",
-                         "Origin", "Destination", "Weight", "Type", "Status"};
+        String[] cols = { "ID", "Tracking No", "Sender ID", "Receiver ID",
+                "Origin", "Destination", "Weight", "Type", "Status" };
         tableModel = new DefaultTableModel(cols, 0) {
-            public boolean isCellEditable(int r, int c) { return false; }
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
         table = new JTable(tableModel);
         table.setRowHeight(24);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
         table.getSelectionModel().addListSelectionListener(
-            e -> { if (!e.getValueIsAdjusting()) fillFormFromTable(); });
+                e -> {
+                    if (!e.getValueIsAdjusting())
+                        fillFormFromTable();
+                });
 
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
         return panel;
@@ -66,41 +71,60 @@ public class ShipmentPanel extends JPanel {
         JPanel wrapper = new JPanel(new BorderLayout(10, 0));
         wrapper.setBorder(BorderFactory.createTitledBorder("Shipment Details"));
 
-        JPanel fields = new JPanel(new GridLayout(5, 4, 8, 8));
+        JPanel fields = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 8, 6, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
 
-        idField          = makeField(fields, "ID (auto)");
-        trackingField    = makeField(fields, "Tracking No");
-        senderIdField    = makeField(fields, "Sender ID");
-        receiverIdField  = makeField(fields, "Receiver ID");
-        courierIdField   = makeField(fields, "Courier ID");
-        originField      = makeField(fields, "Origin City");
-        destinationField = makeField(fields, "Destination City");
-        weightField      = makeField(fields, "Weight (kg)");
+        // Row 0
+        idField = addFormRow(fields, gbc, "ID (auto)", 0, 0);
+        trackingField = addFormRow(fields, gbc, "Tracking No", 0, 2);
+        senderIdField = addFormRow(fields, gbc, "Sender ID", 0, 4);
 
-        fields.add(new JLabel("Package Type"));
-        packageTypeBox = new JComboBox<>(new String[]{
-            "DOCUMENT", "PARCEL", "FRAGILE", "HEAVY"});
-        fields.add(packageTypeBox);
+        // Row 1
+        receiverIdField = addFormRow(fields, gbc, "Receiver ID", 1, 0);
+        courierIdField = addFormRow(fields, gbc, "Courier ID", 1, 2);
+        originField = addFormRow(fields, gbc, "Origin City", 1, 4);
 
-        fields.add(new JLabel("Status"));
-        statusBox = new JComboBox<>(new String[]{
-            "PENDING","PICKED_UP","IN_TRANSIT",
-            "OUT_FOR_DELIVERY","DELIVERED","RETURNED"});
-        fields.add(statusBox);
+        // Row 2
+        destinationField = addFormRow(fields, gbc, "Destination City", 2, 0);
+        weightField = addFormRow(fields, gbc, "Weight (kg)", 2, 2);
+        deliveryField = addFormRow(fields, gbc, "Est. Delivery (YYYY-MM-DD)", 2, 4);
 
-        deliveryField = makeField(fields, "Est. Delivery (YYYY-MM-DD)");
+        // Row 3 — dropdowns
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        fields.add(new JLabel("Package Type"), gbc);
+        gbc.gridx = 1;
+        packageTypeBox = new JComboBox<>(new String[] { "DOCUMENT", "PARCEL", "FRAGILE", "HEAVY" });
+        packageTypeBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        fields.add(packageTypeBox, gbc);
 
+        gbc.gridx = 2;
+        gbc.gridy = 3;
+        fields.add(new JLabel("Status"), gbc);
+        gbc.gridx = 3;
+        statusBox = new JComboBox<>(new String[] {
+                "PENDING", "PICKED_UP", "IN_TRANSIT",
+                "OUT_FOR_DELIVERY", "DELIVERED", "RETURNED" });
+        statusBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        fields.add(statusBox, gbc);
+
+        // make ID and tracking read-only
         idField.setEditable(false);
         idField.setBackground(new Color(240, 240, 240));
         trackingField.setEditable(false);
         trackingField.setBackground(new Color(240, 240, 240));
 
+        // buttons panel
         JPanel btnPanel = new JPanel(new GridLayout(5, 1, 6, 6));
-        addBtn          = makeButton("Book Shipment", new Color(46, 139, 87));
+        btnPanel.setPreferredSize(new Dimension(150, 0));
+        addBtn = makeButton("Book Shipment", new Color(46, 139, 87));
         updateStatusBtn = makeButton("Update Status", new Color(70, 130, 180));
-        trackBtn        = makeButton("Track",         new Color(153, 102, 0));
-        deleteBtn       = makeButton("Delete",        new Color(178, 34, 34));
-        clearBtn        = makeButton("Clear",         new Color(105, 105, 105));
+        trackBtn = makeButton("Track", new Color(153, 102, 0));
+        deleteBtn = makeButton("Delete", new Color(178, 34, 34));
+        clearBtn = makeButton("Clear", new Color(105, 105, 105));
 
         btnPanel.add(addBtn);
         btnPanel.add(updateStatusBtn);
@@ -108,14 +132,15 @@ public class ShipmentPanel extends JPanel {
         btnPanel.add(deleteBtn);
         btnPanel.add(clearBtn);
 
-        wrapper.add(fields,   BorderLayout.CENTER);
+        wrapper.add(fields, BorderLayout.CENTER);
         wrapper.add(btnPanel, BorderLayout.EAST);
 
-        addBtn.addActionListener(e          -> addShipment());
+        // wire buttons
+        addBtn.addActionListener(e -> addShipment());
         updateStatusBtn.addActionListener(e -> updateStatus());
-        deleteBtn.addActionListener(e       -> deleteShipment());
-        clearBtn.addActionListener(e        -> clearForm());
-        trackBtn.addActionListener(e        -> {
+        deleteBtn.addActionListener(e -> deleteShipment());
+        clearBtn.addActionListener(e -> clearForm());
+        trackBtn.addActionListener(e -> {
             if (!idField.getText().isEmpty())
                 trackShipment(trackingField.getText());
         });
@@ -123,15 +148,31 @@ public class ShipmentPanel extends JPanel {
         return wrapper;
     }
 
+    // helper to add label + textfield in one call
+    private JTextField addFormRow(JPanel p, GridBagConstraints gbc,
+            String label, int row, int col) {
+        gbc.gridx = col;
+        gbc.gridy = row;
+        gbc.weightx = 0;
+        p.add(new JLabel(label), gbc);
+
+        gbc.gridx = col + 1;
+        gbc.weightx = 1.0;
+        JTextField tf = new JTextField(14);
+        tf.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        p.add(tf, gbc);
+        return tf;
+    }
+
     private void loadTable() {
         tableModel.setRowCount(0);
         try {
             for (Shipment s : dao.getAllShipments()) {
-                tableModel.addRow(new Object[]{
-                    s.getShipmentId(), s.getTrackingNumber(),
-                    s.getSenderId(), s.getReceiverId(),
-                    s.getOriginCity(), s.getDestinationCity(),
-                    s.getWeight(), s.getPackageType(), s.getStatus()
+                tableModel.addRow(new Object[] {
+                        s.getShipmentId(), s.getTrackingNumber(),
+                        s.getSenderId(), s.getReceiverId(),
+                        s.getOriginCity(), s.getDestinationCity(),
+                        s.getWeight(), s.getPackageType(), s.getStatus()
                 });
             }
         } catch (DatabaseException e) {
@@ -141,7 +182,8 @@ public class ShipmentPanel extends JPanel {
 
     private void fillFormFromTable() {
         int row = table.getSelectedRow();
-        if (row < 0) return;
+        if (row < 0)
+            return;
         idField.setText(tableModel.getValueAt(row, 0).toString());
         trackingField.setText(tableModel.getValueAt(row, 1).toString());
         senderIdField.setText(tableModel.getValueAt(row, 2).toString());
@@ -157,43 +199,42 @@ public class ShipmentPanel extends JPanel {
         try {
             String tracking = "TRK" + System.currentTimeMillis();
             Date delivery = deliveryField.getText().isEmpty() ? null
-                : Date.valueOf(deliveryField.getText().trim());
+                    : Date.valueOf(deliveryField.getText().trim());
 
             Shipment s = new Shipment(
-                tracking,
-                Integer.parseInt(senderIdField.getText().trim()),
-                Integer.parseInt(receiverIdField.getText().trim()),
-                courierIdField.getText().isEmpty() ? 0
-                    : Integer.parseInt(courierIdField.getText().trim()),
-                originField.getText().trim(),
-                destinationField.getText().trim(),
-                Double.parseDouble(weightField.getText().trim()),
-                packageTypeBox.getSelectedItem().toString(),
-                statusBox.getSelectedItem().toString(),
-                delivery
-            );
+                    tracking,
+                    Integer.parseInt(senderIdField.getText().trim()),
+                    Integer.parseInt(receiverIdField.getText().trim()),
+                    courierIdField.getText().isEmpty() ? 0
+                            : Integer.parseInt(courierIdField.getText().trim()),
+                    originField.getText().trim(),
+                    destinationField.getText().trim(),
+                    Double.parseDouble(weightField.getText().trim()),
+                    packageTypeBox.getSelectedItem().toString(),
+                    statusBox.getSelectedItem().toString(),
+                    delivery);
             dao.addShipment(s);
             JOptionPane.showMessageDialog(this,
-                "Shipment booked!\nTracking Number: " + tracking);
+                    "Shipment booked!\nTracking Number: " + tracking);
             clearForm();
             loadTable();
         } catch (DatabaseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Check all fields are filled correctly.",
-                "Validation", JOptionPane.WARNING_MESSAGE);
+                    "Validation", JOptionPane.WARNING_MESSAGE);
         }
     }
 
     private void updateStatus() {
         if (idField.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Select a shipment first.",
-                "Validation", JOptionPane.WARNING_MESSAGE);
+                    "Validation", JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
             dao.updateStatus(Integer.parseInt(idField.getText()),
-                statusBox.getSelectedItem().toString());
+                    statusBox.getSelectedItem().toString());
             JOptionPane.showMessageDialog(this, "Status updated successfully!");
             loadTable();
         } catch (DatabaseException e) {
@@ -204,7 +245,7 @@ public class ShipmentPanel extends JPanel {
     private void trackShipment(String trackingNo) {
         if (trackingNo.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Enter a tracking number.",
-                "Validation", JOptionPane.WARNING_MESSAGE);
+                    "Validation", JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
@@ -213,11 +254,11 @@ public class ShipmentPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "No shipment found for: " + trackingNo);
             } else {
                 JOptionPane.showMessageDialog(this,
-                    "Tracking: "    + s.getTrackingNumber() + "\n" +
-                    "Route: "       + s.getOriginCity() + " → " + s.getDestinationCity() + "\n" +
-                    "Status: "      + s.getStatus() + "\n" +
-                    "Est. Delivery: "+ s.getEstimatedDelivery(),
-                    "Shipment Info", JOptionPane.INFORMATION_MESSAGE);
+                        "Tracking: " + s.getTrackingNumber() + "\n" +
+                                "Route: " + s.getOriginCity() + " → " + s.getDestinationCity() + "\n" +
+                                "Status: " + s.getStatus() + "\n" +
+                                "Est. Delivery: " + s.getEstimatedDelivery(),
+                        "Shipment Info", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (DatabaseException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -227,12 +268,13 @@ public class ShipmentPanel extends JPanel {
     private void deleteShipment() {
         if (idField.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Select a shipment to delete.",
-                "Validation", JOptionPane.WARNING_MESSAGE);
+                    "Validation", JOptionPane.WARNING_MESSAGE);
             return;
         }
         int confirm = JOptionPane.showConfirmDialog(this,
-            "Delete this shipment?", "Confirm", JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) return;
+                "Delete this shipment?", "Confirm", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION)
+            return;
         try {
             dao.deleteShipment(Integer.parseInt(idField.getText()));
             JOptionPane.showMessageDialog(this, "Shipment deleted.");
@@ -244,10 +286,14 @@ public class ShipmentPanel extends JPanel {
     }
 
     private void clearForm() {
-        idField.setText(""); trackingField.setText("");
-        senderIdField.setText(""); receiverIdField.setText("");
-        courierIdField.setText(""); originField.setText("");
-        destinationField.setText(""); weightField.setText("");
+        idField.setText("");
+        trackingField.setText("");
+        senderIdField.setText("");
+        receiverIdField.setText("");
+        courierIdField.setText("");
+        originField.setText("");
+        destinationField.setText("");
+        weightField.setText("");
         deliveryField.setText("");
         packageTypeBox.setSelectedIndex(0);
         statusBox.setSelectedIndex(0);
